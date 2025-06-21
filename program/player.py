@@ -1,4 +1,3 @@
-same 3 drill for this
 import pygame
 from constants import TILE_SIZE, COLOR_PLAYER
 
