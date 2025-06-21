@@ -11,10 +11,10 @@ class Game:
         max_width = info.current_w
         max_height = info.current_h - 100  # leave room for taskbar, etc.
 
-        # dynamically adjust tile size if maze too big
+        # dynamically adjust TILE_SIZE if maze too big
         max_tile_width = max_width // maze.cols
         max_tile_height = (max_height - INFO_PANEL_HEIGHT) // maze.rows
-        self.tile_size = min(max_tile_width, max_tile_height, TILE_SIZE)  # don't exceed original tile size
+        self.tile_size = min(max_tile_width, max_tile_height, TILE_SIZE)  # don't exceed original TILE_SIZE
 
         self.screen_width = maze.cols * self.tile_size
         self.screen_height = maze.rows * self.tile_size + INFO_PANEL_HEIGHT
@@ -24,7 +24,11 @@ class Game:
         self.maze = maze
         self.agent = agent
         self.player = Player(maze.start_pos, maze.rows, maze.cols)
+
+        self.screen_width = maze.cols * TILE_SIZE
+        self.screen_height = maze.rows * TILE_SIZE + INFO_PANEL_HEIGHT
         
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Reinforcement Learning Maze Solver")
         self.clock = pygame.time.Clock()
         self.font_small = pygame.font.SysFont("Arial", 18)
@@ -34,7 +38,7 @@ class Game:
         # draws the maze on the screen
         for r, row_str in enumerate(self.maze.layout):
             for c, char in enumerate(row_str):
-                rect = pygame.Rect(c * self.tile_size, r * self.tile_size, self.tile_size, self.tile_size)
+                rect = pygame.Rect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE)
                 if char == 'W':
                     pygame.draw.rect(self.screen, COLOR_WALL, rect)
                     pygame.draw.rect(self.screen, COLOR_WALL_BORDER, rect, 1)
@@ -42,7 +46,7 @@ class Game:
                     pygame.draw.rect(self.screen, COLOR_PATH, rect)
                 elif char == 'E':
                     pygame.draw.rect(self.screen, COLOR_EXIT_BORDER, rect)
-                    inner_rect = rect.inflate(-self.tile_size // 4, -self.tile_size // 4)
+                    inner_rect = rect.inflate(-TILE_SIZE // 4, -TILE_SIZE // 4)
                     pygame.draw.rect(self.screen, COLOR_EXIT, inner_rect)
 
     def _display_text(self, text, pos, font, color=COLOR_INFO_TEXT):
@@ -52,7 +56,7 @@ class Game:
 
     def _draw_info_panel(self, agent_steps, status_text, status_color):
         # Draws the bottom panel with game information
-        panel_rect = pygame.Rect(0, self.maze.rows * self.tile_size, self.screen_width, INFO_PANEL_HEIGHT)
+        panel_rect = pygame.Rect(0, self.maze.rows * TILE_SIZE, self.screen_width, INFO_PANEL_HEIGHT)
         pygame.draw.rect(self.screen, COLOR_INFO_BG, panel_rect)
 
         # optimal vs agent Steps
